@@ -70,7 +70,7 @@ class Board:
             elif self.current_player == Roles.USER:
                 self.user_move()
             self.print_board()
-            self.check_win()
+            self.check_winner()
             self.update_turns()
             if len(boardkey) == 0:
                 print(f"\n {X} {O} DRAW MATCH!")
@@ -102,7 +102,7 @@ class Board:
     def update_turns(self):
         self.current_player = Roles.PC if self.current_player == Roles.USER else Roles.USER
         
-    def check_win(self):
+    def check_winner(self):
         # diagonal sum
         d1 = np.trace(self.board)
         d2 = np.trace(np.fliplr(self.board))
