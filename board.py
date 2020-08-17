@@ -7,7 +7,6 @@ from roles import Roles
 
 O = emj.emojize(":o:", use_aliases=True)
 X = emj.emojize(":x:", use_aliases=True)
-blank = emj.emojize(":white_medium_square:", use_aliases=True)
 boardkey = {
     "1" : (0,0), "2": (0,1), "3": (0,2),
     "4" : (1,0), "5": (1,1), "6": (1,2),
