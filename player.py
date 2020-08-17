@@ -1,5 +1,4 @@
 class Player:
-    def __init__(self, name, side, emoji):
-        self.name = name
+    def __init__(self, side, emoji):
         self.side = side
         self.emoji = emoji

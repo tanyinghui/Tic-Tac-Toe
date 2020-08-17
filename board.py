@@ -7,6 +7,8 @@ from roles import Roles
 
 O = emj.emojize(":o:", use_aliases=True)
 X = emj.emojize(":x:", use_aliases=True)
+vs = emj.emojize(":vs:", use_aliases=True)
+pc = vs = emj.emojize(":computer:", use_aliases=True)
 boardkey = {
     "1" : (0,0), "2": (0,1), "3": (0,2),
     "4" : (1,0), "5": (1,1), "6": (1,2),
@@ -22,10 +24,8 @@ class Board:
     def __init__(self):
         self.board = np.zeros((3, 3), dtype=int)
         self.winner = None
-        [self.PlayerX, self.PlayerO] = self.choose_side()
-        print(f"User: {self.user.emoji}, PC: {self.pc.emoji}\n")
+        self.choose_side()
         self.create_board()
-        self.current_player = self.PlayerX
         
     def create_board(self):
         print(f"Game board created: \n")
@@ -47,21 +47,20 @@ class Board:
                 
     def choose_side(self):
         while True:
-            try:
-                user_side = int(input(f"Plese choose your side: \n1: {X} (first player)\n2: {O} (second player)\n"))
-            except ValueError:
-                print(f"Sorry :( This is not a valid input. Please enter 1 or 0.")
+            user_side = int(input(f"Plese choose your side: \n1: {X} (first player)\n2: {O} (second player)\n"))
+            if user_side == 1:
+                self.current_player = Roles.USER
+                self.user = Player(1, X)
+                self.pc = Player(-1, O)
+                break
+            elif user_side == 2:
+                self.current_player = Roles.PC
+                self.user = Player(-1, O)
+                self.pc = Player(1, X)
+                break
             else:
-                if user_side == 1:
-                    self.user = Player(Roles.USER, 1, X)
-                    self.pc = Player(Roles.PC, -1, O)
-                    return [Roles.USER, Roles.PC]
-                elif user_side == 2:
-                    self.user = Player(Roles.USER, -1, O)
-                    self.pc = Player(Roles.PC, 1, X)
-                    return [Roles.PC, Roles.USER]
-                else:
-                    print(f"Please enter 1 or 0.")
+                print(f"Please enter 1 or 0.")
+        print(f"\nUser: {self.user.emoji}  {vs}  PC: {self.pc.emoji}\n")
     
     def play_game(self):
         print(f"\nLet's start!")
@@ -79,16 +78,26 @@ class Board:
         self.finished()
 
     def pc_move(self):
+        print(f"\n{pc}'s turn")
         key = str(random.choice(list(boardkey.keys())))
         (i, j) = boardkey[key]
         self.board[i,j] = self.pc.side
         del boardkey[key]
         
     def user_move(self):
-        key = input("It's your turn! Please select the position (1 - 9): ")
+        key = self.input_movement()
         (i, j) = boardkey[key]
         self.board[i,j] = self.user.side
         del boardkey[key]
+
+    def input_movement(self):
+        while True:
+            key = input("\nIt's your turn! Please select the position (1 - 9): ")
+            if key not in boardkey.keys():
+                print("Place is taken/ Index out of range")
+                continue
+            else:
+                return key
     
     def update_turns(self):
         self.current_player = Roles.PC if self.current_player == Roles.USER else Roles.USER
@@ -106,6 +115,6 @@ class Board:
             
     def finished(self):
         if self.winner == "USER":
-            print(f"\n{self.user.emoji} is the WINNER!")
+            print(f"\nYou won! {self.user.emoji} is the WINNER!")
         else:
             print(f"\n{self.pc.emoji} is the WINNER!")
