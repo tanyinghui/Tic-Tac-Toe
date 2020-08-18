@@ -1,4 +1,4 @@
-# Tic-Tac-Toe
+# Tic-Tac-Toe (Noughts and Crosses)
 Tic-Tac-Toe Game using Python
 
 ## Requirements
