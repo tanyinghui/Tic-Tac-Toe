@@ -4,6 +4,7 @@ import emoji as emj
 
 from player import Player
 from roles import Roles
+from strategy import Strategy
 
 O = emj.emojize(":o:", use_aliases=True)
 X = emj.emojize(":x:", use_aliases=True)
@@ -24,8 +25,10 @@ class Board:
     def __init__(self):
         self.board = np.zeros((3, 3), dtype=int)
         self.winner = None
+        self.pc_first_move = False
         self.choose_side()
         self.create_board()
+        self.strategy = Strategy(boardkey)
         
     def create_board(self):
         print(f"Game board created: \n")
@@ -57,6 +60,7 @@ class Board:
                 self.current_player = Roles.PC
                 self.user = Player(-1, O)
                 self.pc = Player(1, X)
+                self.pc_first_move = True
                 break
             else:
                 print(f"Please enter 1 or 0.")
@@ -66,38 +70,43 @@ class Board:
         print(f"\nLet's start!")
         while self.winner is None:
             if self.current_player == Roles.PC:
-                self.pc_move()
+                self.pc_move() 
             elif self.current_player == Roles.USER:
                 self.user_move()
+            self.strategy.update_board(self.board)
             self.print_board()
             self.check_winner()
             self.update_turns()
-            if len(boardkey) == 0:
+            if np.count_nonzero(self.board == 0) == 0:
                 print(f"\n {X} {O} DRAW MATCH!")
                 return
         self.finished()
 
     def pc_move(self):
         print(f"\n{pc}'s turn")
-        key = str(random.choice(list(boardkey.keys())))
-        (i, j) = boardkey[key]
+        if self.pc_first_move:
+            # take the first move
+            self.strategy.first_move()
+            key = str(random.randrange(1, 10, 2))
+            (i, j) = boardkey[key]
+            self.pc_first_move = False
+        else:
+            (i, j) = self.strategy.check_status()
         self.board[i,j] = self.pc.side
-        del boardkey[key]
-        
+
     def user_move(self):
-        key = self.input_movement()
-        (i, j) = boardkey[key]
+        (i, j) = self.input_movement()
         self.board[i,j] = self.user.side
-        del boardkey[key]
 
     def input_movement(self):
         while True:
             key = input("\nIt's your turn! Please select the position (1 - 9): ")
-            if key not in boardkey.keys():
+            (i, j) = boardkey[key]
+            if self.board[i,j] != 0 or key not in boardkey.keys():
                 print("Place is taken/ Index out of range")
                 continue
             else:
-                return key
+                return (i, j)
     
     def update_turns(self):
         self.current_player = Roles.PC if self.current_player == Roles.USER else Roles.USER
