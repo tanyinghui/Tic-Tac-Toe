@@ -79,7 +79,7 @@ class Board:
             self.update_turns()
             if np.count_nonzero(self.board == 0) == 0:
                 print(f"\n {X} {O} DRAW MATCH!")
-                return
+                break
 
     def pc_move(self):
         print(f"\n{pc}'s turn")
