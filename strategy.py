@@ -50,4 +50,8 @@ class Strategy:
 
     def position_win_in_next_move(self):
         (row, column) = np.where(self.board == 0)
-        return (row[0], column[0])
+        if len(row) == 1:
+            return (row[0], column[0])
+        i = random.randint(0, len(row)-1)
+        print(i, row, column)
+        return (row[i], column[i])

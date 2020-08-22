@@ -80,7 +80,6 @@ class Board:
             if np.count_nonzero(self.board == 0) == 0:
                 print(f"\n {X} {O} DRAW MATCH!")
                 return
-        self.finished()
 
     def pc_move(self):
         print(f"\n{pc}'s turn")
@@ -121,6 +120,7 @@ class Board:
         check_list = [d1, d2] + row + column
         if 3 in check_list or -3 in check_list:
             self.winner = self.current_player.name
+            self.finished()
             
     def finished(self):
         if self.winner == "USER":
