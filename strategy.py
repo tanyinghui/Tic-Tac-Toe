@@ -2,10 +2,9 @@ import random
 import numpy as np
 
 class Strategy:
-    def __init__(self, boardkey):
+    def __init__(self):
         self.pc = -1 # initialise as O 
         self.user = 1 # initialise as X
-        self.boardkey = boardkey
         self.board = np.zeros((3, 3), dtype=int)
 
     def first_move(self):

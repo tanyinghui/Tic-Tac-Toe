@@ -28,7 +28,7 @@ class Board:
         self.pc_first_move = False
         self.choose_side()
         self.create_board()
-        self.strategy = Strategy(boardkey)
+        self.strategy = Strategy()
         
     def create_board(self):
         print(f"Game board created: \n")
