@@ -53,5 +53,4 @@ class Strategy:
         if len(row) == 1:
             return (row[0], column[0])
         i = random.randint(0, len(row)-1)
-        print(i, row, column)
         return (row[i], column[i])
